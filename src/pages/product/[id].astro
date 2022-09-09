@@ -1,0 +1,29 @@
+---
+import Layout from "@layouts/Layout.astro";
+import { getAllBooks } from '@api/books';
+import { AddToCartForm } from "@components/AddToCartForm";
+import { formatPrice } from "@utils";
+
+const books = await getAllBooks();
+const { id } = Astro.params;
+
+const book = books.find((book) => book.isbn === id);
+
+---
+<Layout title={book?.title} description={book?.synopsis[0]}>
+    <section class="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+        <div class="flex flex-col">
+            <img class="rounded" src={book?.cover} alt={book?.synopsis[0]} />
+            <p class="my-2 text-lg font-medium text-gray-900 mr-4">{formatPrice(book?.price)}</p>
+            <AddToCartForm itemData={{ id: book?.isbn, name: book?.title, cover: book?.cover, price: book?.price }} client:load>
+                <button type="submit" class="w-full transition ease-in-out delay-150 rounded p-1 text-indigo-600 hover:bg-indigo-600 hover:border-transparent hover:text-white border-2 border-indigo-600">Add to cart</button>
+            </AddToCartForm>
+        </div>
+        <article class="col-span-3">
+            <h1 class="text-4xl mb-4">{book?.title}</h1>
+            {book?.synopsis.map((text: string) => (
+                <p class="mb-2">{text}</p>
+            ))}
+        </article>
+    </section>
+</Layout>

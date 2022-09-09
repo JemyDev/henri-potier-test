@@ -1,0 +1,52 @@
+---
+import Icon from "astro-icon";
+
+import { CartButton } from "@components/CartButton";
+---
+<script>
+    const searchForm = document.querySelector<HTMLFormElement>("form");
+
+    if (searchForm) {
+        searchForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            if (event.target) {
+                const data = new FormData(event.target as HTMLFormElement);
+                const urlParams = new URLSearchParams();
+                for (var [, value] of data.entries()) {
+                    urlParams.set("searchTerm", value as string);
+                    window.location.href = `/?${urlParams.toString()}`;
+                }
+            }
+        });
+    }
+</script>
+<header class="bg-white fixed w-full mx-auto z-10 px-4 sm:px-6">
+    <div class="flex items-center justify-between border-b-2 border-gray-100 py-6 md:justify-start md:space-x-10">
+        <div class="flex justify-start">
+            <a href="/">
+              <span class="sr-only">Henri Potier's Online Library</span>
+              <img class="h-8 w-auto sm:h-10" src="/logo.png" alt="Henri Potier's Online Library" />
+            </a>
+        </div>
+        <form id="search-form" class="w-full">
+            <input
+                id="search-bar"
+                type="text"
+                name="search-bar"
+                class="w-2/4 rounded px-4 py-2 border border-gray-300 focus:ring-indigo-500 sm:text-sm"
+                placeholder="Search for a book..."
+            />
+        </form>
+        <div class="flex justify-end lg:w-O lg:flex-1">
+            <CartButton client:load>
+                <Icon pack="bi" name="cart" />
+            </CartButton>
+        </div>
+    </div>
+</header>
+<style>
+    [astro-icon="bi:cart"] {
+        width: 2rem;
+        height: 2rem;
+    }
+</style>

@@ -1,0 +1,32 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Product from "@components/Product.astro";
+import { getAllBooks } from '@api/books';
+
+const url = new URL(Astro.request.url);
+const urlParams = new URLSearchParams(url.searchParams);
+const searchTerm = urlParams.get("searchTerm");
+
+const books = await getAllBooks(searchTerm);
+---
+<script>
+	const referrer = document.referrer;
+	console.log(referrer);
+</script>
+<Layout title="Welcome to Henri Potier!" description="You can find & order all Henri Potier's books in one place!">
+	<h1 class="text-2xl my-2">Welcome to Henri Potier's website!</h1>
+	<p class="mb-16">You can find & order all Henri Potier's books in one place!</p>
+	<h2 class="text-xl mb-8">Products</h2>
+	<section class="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+		{books.map(book => (
+			<Product
+				id={book.isbn}
+				title={book.title}
+				cover={book.cover}
+				href={`/product/${book.isbn}`}
+				description={book.synopsis[0]}
+				price={book.price}
+			/>
+		))}
+	</section>
+</Layout>
